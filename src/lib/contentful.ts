@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import { createClient } from 'contentful';
+import { createClient, ContentfulClientApi } from 'contentful';
 import { 
   ContentfulPage, 
   PagesQueryResponse, 
@@ -9,9 +9,30 @@ import {
 
 const CONTENTFUL_ENDPOINT = 'https://graphql.contentful.com/content/v1/spaces';
 
+// Type guard for LayoutConfig
+function isLayoutConfig(obj: any): obj is LayoutConfig {
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    Array.isArray(obj.components) &&
+    typeof obj.version === 'string' &&
+    typeof obj.lastModified === 'string'
+  );
+}
+
+// Type guard for ContentfulAsset
+function isContentfulAsset(obj: any): obj is import('@/types').ContentfulAsset {
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    obj.sys && typeof obj.sys.id === 'string' && obj.sys.type === 'Asset' &&
+    obj.fields && typeof obj.fields.title === 'string' && obj.fields.file
+  );
+}
+
 class ContentfulClient {
   private graphqlClient: GraphQLClient;
-  private restClient: any;
+  private restClient: ContentfulClientApi<any>;
 
   constructor(spaceId: string, accessToken: string) {
     this.graphqlClient = new GraphQLClient(`${CONTENTFUL_ENDPOINT}/${spaceId}`, {
@@ -36,16 +57,18 @@ class ContentfulClient {
 
       return response.items.map((item: any) => ({
         sys: {
-          id: item.sys.id,
-          type: item.sys.type,
+          id: typeof item.sys.id === 'string' ? item.sys.id : '',
+          type: typeof item.sys.type === 'string' ? item.sys.type : 'Entry',
         },
         fields: {
-          title: item.fields.title,
-          slug: item.fields.slug,
-          layoutConfig: item.fields.layoutConfig || { components: [], version: '1.0', lastModified: new Date().toISOString() },
-          seoTitle: item.fields.seoTitle,
-          seoDescription: item.fields.seoDescription,
-          seoImage: item.fields.seoImage,
+          title: typeof item.fields.title === 'string' ? item.fields.title : '',
+          slug: typeof item.fields.slug === 'string' ? item.fields.slug : '',
+          layoutConfig: isLayoutConfig(item.fields.layoutConfig)
+            ? item.fields.layoutConfig
+            : { components: [], version: '1.0', lastModified: new Date().toISOString() },
+          seoTitle: typeof item.fields.seoTitle === 'string' ? item.fields.seoTitle : undefined,
+          seoDescription: typeof item.fields.seoDescription === 'string' ? item.fields.seoDescription : undefined,
+          seoImage: isContentfulAsset(item.fields.seoImage) ? item.fields.seoImage : undefined,
         },
       }));
     } catch (error) {
@@ -71,12 +94,14 @@ class ContentfulClient {
             type: item.sys.type,
           },
           fields: {
-            title: item.fields.title,
-            slug: item.fields.slug,
-            layoutConfig: item.fields.layoutConfig || { components: [], version: '1.0', lastModified: new Date().toISOString() },
-            seoTitle: item.fields.seoTitle,
-            seoDescription: item.fields.seoDescription,
-            seoImage: item.fields.seoImage,
+            title: typeof item.fields.title === 'string' ? item.fields.title : '',
+            slug: typeof item.fields.slug === 'string' ? item.fields.slug : '',
+            layoutConfig: isLayoutConfig(item.fields.layoutConfig)
+              ? item.fields.layoutConfig
+              : { components: [], version: '1.0', lastModified: new Date().toISOString() },
+            seoTitle: typeof item.fields.seoTitle === 'string' ? item.fields.seoTitle : undefined,
+            seoDescription: typeof item.fields.seoDescription === 'string' ? item.fields.seoDescription : undefined,
+            seoImage: isContentfulAsset(item.fields.seoImage) ? item.fields.seoImage : undefined,
           },
         };
       }
@@ -105,12 +130,14 @@ class ContentfulClient {
 
       if (response.items.length > 0) {
         const page = response.items[0];
-        const layoutConfig = page.fields.layoutConfig;
+        const layoutConfig = isLayoutConfig(page.fields.layoutConfig)
+          ? page.fields.layoutConfig
+          : { components: [], version: '1.0', lastModified: new Date().toISOString() };
         
         if (layoutConfig && layoutConfig.components) {
           return {
-            title: page.fields.title,
-            slug: page.fields.slug,
+            title: typeof page.fields.title === 'string' ? page.fields.title : '',
+            slug: typeof page.fields.slug === 'string' ? page.fields.slug : '',
             layout: layoutConfig.components,
             lastModified: layoutConfig.lastModified,
             version: layoutConfig.version

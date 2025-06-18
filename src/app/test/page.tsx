@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function TestPage() {
-  let pages: any[] = [];
+  let pages: import('@/types').ContentfulPage[] = [];
   let error: string | null = null;
 
   try {

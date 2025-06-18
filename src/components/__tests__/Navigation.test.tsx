@@ -1,8 +1,10 @@
+/* eslint-disable react/display-name */
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Navigation from '../Navigation';
+import '@testing-library/jest-dom';
 
-// Mock Next.js Link component
+// eslint-disable-next-line react/display-name
 jest.mock('next/link', () => {
   return ({ children, href }: { children: React.ReactNode; href: string }) => {
     return <a href={href}>{children}</a>;

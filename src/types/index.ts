@@ -111,7 +111,7 @@ export interface RootState {
 // GraphQL Response Types
 export interface GraphQLResponse<T> {
   data: T;
-  errors?: any[];
+  errors?: unknown[];
 }
 
 export interface PagesQueryResponse {
@@ -143,5 +143,5 @@ export interface PageMetadata {
 export interface StructuredData {
   '@context': string;
   '@type': string;
-  [key: string]: any;
+  [key: string]: unknown;
 } 
