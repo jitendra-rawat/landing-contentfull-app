@@ -1,6 +1,13 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
+  "/api/landing-pages/route": "app/api/landing-pages/route.js",
+  "/api/landing-pages/[slug]/route": "app/api/landing-pages/[slug]/route.js",
+  "/api/pages/route": "app/api/pages/route.js",
+  "/api/pages/[slug]/route": "app/api/pages/[slug]/route.js",
+  "/landing/[slug]/page": "app/landing/[slug]/page.js",
   "/test/page": "app/test/page.js",
+  "/landing/page-2/page": "app/landing/page-2/page.js",
   "/landing/page-1/page": "app/landing/page-1/page.js",
+  "/preview/page": "app/preview/page.js",
   "/page": "app/page.js"
 }

@@ -58,7 +58,7 @@ export default async function TestPage() {
                 </>
               ) : (
                 <div className="error-message">
-                  <p>No landing page found with slug: "{testSlug}"</p>
+                  <p>No landing page found with slug: {testSlug}</p>
                   <p>Please create a landing page in Contentful with this slug, or change the testSlug in this file.</p>
                 </div>
               )}
