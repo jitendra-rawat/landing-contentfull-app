@@ -31,11 +31,11 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
           return null;
         }
         switch (component.type) {
-          case 'hero':
+          case 'HeroBlock':
             return <HeroBlock key={component.id} component={component as HeroComponent} />;
-          case 'twoColumn':
+          case 'TwoColumnRow':
             return <TwoColumnBlock key={component.id} component={component as TwoColumnComponent} />;
-          case 'imageGrid':
+          case 'ImageGrid':
             return <ImageGridBlock key={component.id} component={component as ImageGridComponent} />;
           default:
             console.warn(`Unknown component type: ${(component as { type?: string }).type}`);

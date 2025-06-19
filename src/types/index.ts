@@ -37,48 +37,72 @@ export interface ContentfulEntry {
   fields: Record<string, unknown>;
 }
 
-// Component Types
-export type ComponentType = 'hero' | 'twoColumn' | 'imageGrid';
+// Component Types - Updated to match Contentful JSON structure
+export type ComponentType = 'HeroBlock' | 'TwoColumnRow' | 'ImageGrid';
 
 export interface BaseComponent {
   id: string;
   type: ComponentType;
+  name: string;
 }
 
+// Updated component interfaces to match Contentful structure
 export interface HeroComponent extends BaseComponent {
-  type: 'hero';
-  heading: string;
-  subtitle: string;
-  ctaText: string;
-  ctaLink: string;
+  type: 'HeroBlock';
+  name: string;
+  // Add any specific fields that might be stored in Contentful
+  heading?: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
   backgroundImage?: ContentfulAsset;
 }
 
 export interface TwoColumnComponent extends BaseComponent {
-  type: 'twoColumn';
-  leftHeading: string;
-  leftSubtitle: string;
-  leftCtaText: string;
-  leftCtaLink: string;
-  rightImage: ContentfulAsset;
+  type: 'TwoColumnRow';
+  name: string;
+  // Add any specific fields that might be stored in Contentful
+  leftHeading?: string;
+  leftSubtitle?: string;
+  leftCtaText?: string;
+  leftCtaLink?: string;
+  rightImage?: ContentfulAsset;
 }
 
 export interface ImageGridComponent extends BaseComponent {
-  type: 'imageGrid';
-  images: ContentfulAsset[];
+  type: 'ImageGrid';
+  name: string;
+  // Add any specific fields that might be stored in Contentful
+  images?: ContentfulAsset[];
   title?: string;
 }
 
 export type Component = HeroComponent | TwoColumnComponent | ImageGridComponent;
 
-// Layout Configuration
+// Layout Configuration - Updated to match Contentful JSON structure
 export interface LayoutConfig {
   components: Component[];
   version: string;
   lastModified: string;
 }
 
-// Contentful Page Entry
+// Contentful Landing Page Entry - Updated to use 'layoutConfig' field
+export interface ContentfulLandingPage {
+  sys: {
+    id: string;
+    type: 'Entry';
+  };
+  fields: {
+    title: string;
+    slug: string;
+    layoutConfig?: LayoutConfig;
+    seoTitle?: string;
+    seoDescription?: string;
+    seoImage?: ContentfulAsset;
+  };
+}
+
+// Keep the old ContentfulPage for backward compatibility
 export interface ContentfulPage {
   sys: {
     id: string;
@@ -120,8 +144,18 @@ export interface PagesQueryResponse {
   };
 }
 
+export interface LandingPagesQueryResponse {
+  landingPageCollection: {
+    items: ContentfulLandingPage[];
+  };
+}
+
 export interface PageQueryResponse {
   page: ContentfulPage;
+}
+
+export interface LandingPageQueryResponse {
+  landingPage: ContentfulLandingPage;
 }
 
 // App Configuration

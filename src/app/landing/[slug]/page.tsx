@@ -42,11 +42,26 @@ export default async function DynamicLandingPage({ params }: PageProps) {
         <div className="page-header">
           <div className="container">
             <h1>{pageData.title}</h1>
+            <p><strong>Slug:</strong> {pageData.slug}</p>
             <p>Version: {pageData.version} | Last Modified: {new Date(pageData.lastModified).toLocaleDateString()}</p>
           </div>
         </div>
-        
-        <ComponentRenderer components={pageData.layout} />
+        <div className="container">
+          <h2>Layout Components</h2>
+          <ComponentRenderer components={pageData.layout} />
+          <h3>Raw layoutConfig JSON</h3>
+          <pre style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflowX: 'auto' }}>
+            {JSON.stringify({
+              title: pageData.title,
+              slug: pageData.slug,
+              layoutConfig: {
+                components: pageData.layout,
+                lastModified: pageData.lastModified,
+                version: pageData.version
+              }
+            }, null, 2)}
+          </pre>
+        </div>
       </main>
     </>
   );
